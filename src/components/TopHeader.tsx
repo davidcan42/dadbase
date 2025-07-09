@@ -3,6 +3,7 @@
 import { UserButton } from '@clerk/nextjs';
 import { ThemeToggle } from './theme-toggle';
 import { Shield } from 'lucide-react';
+import Link from 'next/link';
 
 export default function TopHeader() {
   return (
@@ -21,6 +22,14 @@ export default function TopHeader() {
           {/* User Controls */}
           <div className="flex items-center space-x-4">
             <ThemeToggle />
+            <nav className="hidden md:flex items-center space-x-4">
+              <Link 
+                href="/profile" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Profile
+              </Link>
+            </nav>
             <UserButton 
               appearance={{
                 elements: {

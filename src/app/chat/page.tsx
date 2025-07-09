@@ -1,7 +1,8 @@
 'use client';
 
 import { useUser } from "@clerk/nextjs";
-import { MessageCircle, Bot } from "lucide-react";
+import ChatInterface from "@/components/ChatInterface";
+import { Bot } from "lucide-react";
 
 export default function ChatPage() {
   const { user, isLoaded } = useUser();
@@ -29,36 +30,21 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="text-center md:text-left">
-        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center">
-          <Bot className="h-8 w-8 mr-3 text-primary" />
+      <div className="text-center md:text-left p-4 border-b border-border bg-card">
+        <h1 className="text-2xl font-bold text-foreground mb-1 flex items-center justify-center md:justify-start">
+          <Bot className="h-6 w-6 mr-3 text-primary" />
           AI Coach
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Get personalized advice based on Dr. Anna Machin's research
         </p>
       </div>
 
-      {/* Chat Interface Placeholder */}
-      <div className="dadbase-card min-h-[500px] flex flex-col">
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <MessageCircle className="h-8 w-8 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                AI Chat Coming Soon
-              </h3>
-              <p className="text-muted-foreground max-w-md">
-                Your personalized AI coach will be available here to provide 24/7 support 
-                based on scientific research from Dr. Anna Machin.
-              </p>
-            </div>
-          </div>
-        </div>
+      {/* Chat Interface */}
+      <div className="flex-1 min-h-0">
+        <ChatInterface />
       </div>
     </div>
   );

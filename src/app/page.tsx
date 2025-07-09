@@ -1,6 +1,7 @@
 'use client';
 
 import { useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
 import DashboardCard from "@/components/DashboardCard";
 import ProgressTracker from "@/components/ProgressTracker";
 import DailyInsight from "@/components/DailyInsight";
@@ -16,8 +17,68 @@ import Link from "next/link";
 
 export default function Dashboard() {
   const { user, isLoaded } = useUser();
+  const [profileStatus, setProfileStatus] = useState<{ hasProfile: boolean; loading: boolean }>({
+    hasProfile: false,
+    loading: true
+  });
 
-  if (!isLoaded) {
+  // Check if user has completed onboarding
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (!user) {
+        setProfileStatus({ hasProfile: false, loading: false });
+        return;
+      }
+      
+      // For testing: check localStorage first (faster)
+      const hasCompletedOnboarding = localStorage.getItem('dadbase-onboarding-completed');
+      if (!hasCompletedOnboarding) {
+        window.location.href = '/onboarding';
+        return;
+      }
+
+      // Try API call but don't block on it
+      try {
+        const response = await fetch('/api/users/sync', { method: 'POST' });
+        if (response.ok) {
+          const data = await response.json();
+          if (!data.user.hasProfile || !data.user.onboardingCompleted) {
+            // If API says no profile but localStorage says yes, trust localStorage for testing
+            setProfileStatus({ hasProfile: true, loading: false });
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('API unavailable, using localStorage fallback:', error);
+      }
+      
+      // Always complete loading for testing
+      setProfileStatus({ hasProfile: true, loading: false });
+    };
+
+    if (isLoaded && user) {
+      checkProfile();
+    } else if (isLoaded && !user) {
+      setProfileStatus({ hasProfile: false, loading: false });
+    }
+
+    // Failsafe: always stop loading after 3 seconds
+    const timeout = setTimeout(() => {
+      console.log('Loading timeout reached, proceeding with defaults');
+      if (profileStatus.loading) {
+        const hasCompletedOnboarding = localStorage.getItem('dadbase-onboarding-completed');
+        if (!hasCompletedOnboarding && user) {
+          window.location.href = '/onboarding';
+        } else {
+          setProfileStatus({ hasProfile: true, loading: false });
+        }
+      }
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [isLoaded, user, profileStatus.loading]);
+
+  if (!isLoaded || profileStatus.loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -34,6 +95,37 @@ export default function Dashboard() {
         <div className="text-center">
           <h2 className="text-xl font-semibold text-foreground mb-2">Welcome to DadBase</h2>
           <p className="text-muted-foreground">Please sign in to access your father support dashboard.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if user might need onboarding
+  const hasCompletedOnboarding = typeof window !== 'undefined' ? localStorage.getItem('dadbase-onboarding-completed') : null;
+  
+  if (!hasCompletedOnboarding && profileStatus.hasProfile) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center space-y-4">
+          <h2 className="text-xl font-semibold text-foreground mb-2">Welcome to DadBase!</h2>
+          <p className="text-muted-foreground">Let's set up your father profile to get started.</p>
+          <button
+            onClick={() => window.location.href = '/onboarding'}
+            className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Start Setup
+          </button>
+          <div className="text-center">
+            <button
+              onClick={() => {
+                localStorage.setItem('dadbase-onboarding-completed', 'true');
+                setProfileStatus({ hasProfile: true, loading: false });
+              }}
+              className="text-sm text-muted-foreground hover:text-foreground underline"
+            >
+              Skip for now (testing)
+            </button>
+          </div>
         </div>
       </div>
     );
