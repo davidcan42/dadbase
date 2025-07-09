@@ -3,7 +3,8 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import Sidebar from "@/components/Sidebar";
+import TopHeader from "@/components/TopHeader";
+import BottomNavigation from "@/components/BottomNavigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SwitchDimension App",
-  description: "A Next.js app with Clerk authentication",
+  title: "DadBase - Your Command Center for Fatherhood",
+  description: "AI-powered support platform for fathers, backed by scientific research from Dr. Anna Machin",
 };
 
 export default function RootLayout({
@@ -38,27 +39,22 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="min-h-screen bg-background">
-            {/* Layout with Sidebar */}
-            <div className="flex h-screen">
-              {/* Sidebar */}
-              <Sidebar />
+            {/* Mobile-First Layout */}
+            <div className="flex flex-col min-h-screen">
+              {/* Top Header - Desktop/Tablet */}
+              <div className="hidden md:block">
+                <TopHeader />
+              </div>
               
               {/* Main Content Area */}
-              <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Simplified Header - only visible on mobile when sidebar is closed */}
-                <header className="lg:hidden bg-card shadow-sm border-b border-border">
-                  <div className="flex justify-center items-center h-16 pr-4">
-                    <h1 className="text-xl font-semibold text-foreground">Switch Dimension</h1>
-                  </div>
-                </header>
+              <main className="flex-1 overflow-auto p-4 md:p-6 pb-20 md:pb-6">
+                <div className="max-w-6xl mx-auto">
+                  {children}
+                </div>
+              </main>
 
-                {/* Main Content */}
-                <main className="flex-1 overflow-auto p-6">
-                  <div className="max-w-6xl mx-auto">
-                    {children}
-                  </div>
-                </main>
-              </div>
+              {/* Bottom Navigation - Mobile/Tablet */}
+              <BottomNavigation />
             </div>
           </div>
         </ThemeProvider>

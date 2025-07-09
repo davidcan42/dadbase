@@ -14,11 +14,161 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Core User model with Clerk integration
+model User {
+  id              String   @id @default(cuid())
+  clerkId         String   @unique
+  email           String   @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Father-specific relationships
+  fatherProfile   FatherProfile?
+  chatThreads     ChatThread[]
+  bookmarks       Bookmark[]
+  communityGroups CommunityMember[]
+  goals           Goal[]
+  progressEntries UserProgress[]
+}
+
+// Father-specific profile information
+model FatherProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Personal information
+  fatherName      String?
+  childrenAges    Int[]
+  fatheringSince  DateTime?
+  relationshipStatus String?
+  
+  // Preferences and goals
+  primaryConcerns String[]
+  fatheringGoals  String[]
+  communicationStyle String?
+  preferences     Json?
+  
+  // Onboarding completion
+  onboardingCompleted Boolean @default(false)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// AI Chat conversation threads
+model ChatThread {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String?
+  isArchived  Boolean     @default(false)
+  messages    ChatMessage[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// Individual chat messages
+model ChatMessage {
+  id          String     @id @default(cuid())
+  threadId    String
+  thread      ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  content     String
+  role        String     // 'user', 'assistant', 'system'
+  metadata    Json?      // For storing additional context
+  timestamp   DateTime   @default(now())
+}
+
+// Dr. Anna Machin's content items
+model ContentItem {
+  id              String     @id @default(cuid())
+  title           String
+  contentType     String     // 'book_chapter', 'research_paper', 'article', 'video'
+  sourceReference String?
+  content         String     // Main content text
+  summary         String?    // Brief summary
+  targetAge       String?    // Target child age group
+  themes          String[]   // Key themes/topics
+  complexity      String?    // 'beginner', 'intermediate', 'advanced'
+  metadata        Json?
+  
+  // Relationships
+  bookmarks       Bookmark[]
+  progressEntries UserProgress[]
+  
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+// User bookmarks for content
+model Bookmark {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contentId   String
+  content     ContentItem @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  notes       String?
+  createdAt   DateTime    @default(now())
+  
+  @@unique([userId, contentId])
+}
+
+// Father development goals
+model Goal {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  category    String?  // 'bonding', 'development', 'personal_growth', 'relationship'
+  targetDate  DateTime?
+  completed   Boolean  @default(false)
+  progress    Int      @default(0) // 0-100
+  priority    String   @default("medium") // 'low', 'medium', 'high'
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Community groups for father support
+model CommunityGroup {
+  id          String            @id @default(cuid())
+  name        String
+  description String?
+  groupType   String            // 'new_fathers', 'experienced', 'single_fathers', 'working_fathers'
+  isPrivate   Boolean           @default(false)
+  maxMembers  Int?
+  location    String?           // For local groups
+  createdBy   String?
+  members     CommunityMember[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+// Community group memberships
+model CommunityMember {
+  id        String         @id @default(cuid())
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groupId   String
+  group     CommunityGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  role      String         @default("member") // 'member', 'moderator', 'admin'
+  joinedAt  DateTime       @default(now())
+  
+  @@unique([userId, groupId])
+}
+
+// User progress tracking for content and goals
+model UserProgress {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contentId     String?
+  content       ContentItem? @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  progressType  String      // 'content_completed', 'content_in_progress', 'milestone_achieved'
+  progressValue Decimal     @default(0.00) // 0.00 to 100.00
+  notes         String?
+  achievedAt    DateTime?   // When milestone was achieved
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
