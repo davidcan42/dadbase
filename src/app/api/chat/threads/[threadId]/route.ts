@@ -10,7 +10,7 @@ const updateThreadSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
   try {
     const { userId } = await auth()
@@ -18,6 +18,8 @@ export async function GET(
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const { threadId } = await params
 
     // Get user from database
     const user = await prisma.user.findUnique({
@@ -31,7 +33,7 @@ export async function GET(
     // Get thread with messages
     const thread = await prisma.chatThread.findFirst({
       where: {
-        id: params.threadId,
+        id: threadId,
         userId: user.id
       },
       include: {
@@ -70,7 +72,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
   try {
     const { userId } = await auth()
@@ -79,6 +81,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { threadId } = await params
     const body = await request.json()
     const validatedData = updateThreadSchema.parse(body)
 
@@ -94,7 +97,7 @@ export async function PUT(
     // Update thread
     const thread = await prisma.chatThread.updateMany({
       where: {
-        id: params.threadId,
+        id: threadId,
         userId: user.id
       },
       data: {
@@ -126,7 +129,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
   try {
     const { userId } = await auth()
@@ -134,6 +137,8 @@ export async function DELETE(
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const { threadId } = await params
 
     // Get user from database
     const user = await prisma.user.findUnique({
@@ -147,7 +152,7 @@ export async function DELETE(
     // Delete thread (this will cascade delete messages)
     const thread = await prisma.chatThread.deleteMany({
       where: {
-        id: params.threadId,
+        id: threadId,
         userId: user.id
       }
     })

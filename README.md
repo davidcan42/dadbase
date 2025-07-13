@@ -58,6 +58,13 @@ CLERK_SECRET_KEY=sk_test_your_secret_key_here
 
 # Database Configuration
 DATABASE_URL="postgresql://username:password@localhost:5432/your_database_name"
+
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4o-mini
+
+# Application Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 ### 3. Installation

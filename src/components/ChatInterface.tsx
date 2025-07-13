@@ -23,6 +23,13 @@ interface ChatThread {
   updatedAt: Date;
 }
 
+// Helper function to safely convert date strings to Date objects
+const safeDate = (dateString: string | Date): Date => {
+  if (dateString instanceof Date) return dateString;
+  const date = new Date(dateString);
+  return isNaN(date.getTime()) ? new Date() : date;
+};
+
 export default function ChatInterface() {
   const { user } = useUser();
   const [threads, setThreads] = useState<ChatThread[]>([]);
@@ -62,11 +69,18 @@ export default function ChatInterface() {
         const response = await fetch('/api/chat/threads');
         if (response.ok) {
           const data = await response.json();
-          setThreads(data.threads);
+          // Convert date strings to Date objects
+          const threadsWithDates = data.threads.map((thread: any) => ({
+            ...thread,
+            lastMessageTime: safeDate(thread.lastMessageTime),
+            createdAt: safeDate(thread.createdAt),
+            updatedAt: safeDate(thread.updatedAt)
+          }));
+          setThreads(threadsWithDates);
           
           // Auto-select first thread if available
-          if (data.threads.length > 0 && !currentThread) {
-            setCurrentThread(data.threads[0]);
+          if (threadsWithDates.length > 0 && !currentThread) {
+            setCurrentThread(threadsWithDates[0]);
           }
         }
       } catch (error) {
@@ -100,7 +114,7 @@ export default function ChatInterface() {
           const data = await response.json();
           setMessages(data.thread.messages.map((msg: any) => ({
             ...msg,
-            timestamp: new Date(msg.timestamp)
+            timestamp: safeDate(msg.timestamp)
           })));
         }
       } catch (error) {

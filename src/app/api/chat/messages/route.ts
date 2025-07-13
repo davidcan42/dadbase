@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
+import { generateAIResponse, findRelevantContent, generateThreadTitle, ChatMessage, UserProfile } from '@/lib/openai'
 
 const sendMessageSchema = z.object({
   threadId: z.string().min(1),
@@ -60,9 +61,48 @@ export async function POST(request: NextRequest) {
 
     // If it's a user message, generate AI response
     if (validatedData.role === 'user') {
-      // For now, we'll create a simple mock response
-      // TODO: Replace with actual OpenAI integration
-      const aiResponse = await generateAIResponse(validatedData.content, user.fatherProfile)
+      // Get chat history for context
+      const chatHistory = await prisma.chatMessage.findMany({
+        where: { threadId: validatedData.threadId },
+        orderBy: { timestamp: 'asc' },
+        select: {
+          content: true,
+          role: true,
+          timestamp: true
+        }
+      })
+
+      // Convert to ChatMessage format for OpenAI
+      const formattedHistory: ChatMessage[] = chatHistory.map(msg => ({
+        role: msg.role as 'user' | 'assistant' | 'system',
+        content: msg.content,
+        timestamp: msg.timestamp
+      }))
+
+      // Get user profile for context
+      const userProfile: UserProfile | null = user.fatherProfile ? {
+        fatherName: user.fatherProfile.fatherName || undefined,
+        childrenAges: user.fatherProfile.childrenAges || undefined,
+        relationshipStatus: user.fatherProfile.relationshipStatus || undefined,
+        primaryConcerns: user.fatherProfile.primaryConcerns || undefined,
+        fatheringGoals: user.fatherProfile.fatheringGoals || undefined,
+        communicationStyle: user.fatherProfile.communicationStyle || undefined
+      } : null
+
+      // Find relevant content to provide context
+      const relevantContent = await findRelevantContent(
+        validatedData.content,
+        userProfile,
+        3
+      )
+
+      // Generate AI response with context
+      const aiResponse = await generateAIResponse(
+        validatedData.content,
+        formattedHistory,
+        userProfile,
+        relevantContent
+      )
       
       // Save AI response
       const aiMessage = await prisma.chatMessage.create({
@@ -76,7 +116,7 @@ export async function POST(request: NextRequest) {
 
       // Update thread title if it's the first message
       if (thread.title === 'New Chat') {
-        const newTitle = generateThreadTitle(validatedData.content)
+        const newTitle = await generateThreadTitle(validatedData.content)
         await prisma.chatThread.update({
           where: { id: validatedData.threadId },
           data: { title: newTitle }
@@ -123,35 +163,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Mock AI response function - to be replaced with OpenAI integration
-async function generateAIResponse(userMessage: string, fatherProfile: any) {
-  // This is a temporary mock response
-  // TODO: Replace with actual OpenAI API call
-  
-  const responses = [
-    "I understand you're looking for guidance. As a father, it's natural to have questions and concerns. Can you tell me more about what's on your mind?",
-    "That's a great question. Based on Dr. Anna Machin's research, fathers play a unique role in child development. Let me share some insights that might help.",
-    "I hear you. Being a father can be both rewarding and challenging. What specific aspect would you like to explore further?",
-    "Thank you for sharing that with me. Every father's journey is different, and it's important to find what works best for you and your family.",
-    "That's something many fathers experience. Let me provide some evidence-based guidance that might be helpful in your situation."
-  ]
-
-  // Add some context based on father profile if available
-  let response = responses[Math.floor(Math.random() * responses.length)]
-  
-  if (fatherProfile?.fatherName) {
-    response = `Hi ${fatherProfile.fatherName}, ${response}`
-  }
-
-  // Simulate AI processing delay
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  
-  return response
-}
-
-// Generate thread title from first message
-function generateThreadTitle(message: string): string {
-  // Simple title generation - can be enhanced later
-  const words = message.split(' ').slice(0, 5).join(' ')
-  return words.length > 40 ? words.substring(0, 40) + '...' : words
-} 
+ 
