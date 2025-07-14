@@ -1,7 +1,7 @@
 'use client';
 
 import { useUser } from "@clerk/nextjs";
-import { Users, Heart } from "lucide-react";
+import CommunityHub from '@/features/community/CommunityHub';
 
 export default function CommunityPage() {
   const { user, isLoaded } = useUser();
@@ -29,36 +29,9 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center md:text-left">
-        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center">
-          <Users className="h-8 w-8 mr-3 text-accent" />
-          Father Community
-        </h1>
-        <p className="text-muted-foreground">
-          Connect with other fathers for support, advice, and shared experiences
-        </p>
-      </div>
-
-      {/* Community Placeholder */}
-      <div className="dadbase-card min-h-[400px] flex flex-col">
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
-              <Heart className="h-8 w-8 text-accent" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Community Features Coming Soon
-              </h3>
-              <p className="text-muted-foreground max-w-md">
-                Join father support groups, find mentors, and connect with other dads 
-                who understand your journey.
-              </p>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <CommunityHub />
       </div>
     </div>
   );

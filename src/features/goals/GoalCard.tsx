@@ -9,7 +9,8 @@ import {
   Edit, 
   Trash2, 
   CheckCircle, 
-  AlertCircle 
+  AlertCircle,
+  Share2 
 } from 'lucide-react'
 import { GoalWithStats } from '@/services/goal.service'
 import { formatDistanceToNow } from 'date-fns'
@@ -20,6 +21,7 @@ interface GoalCardProps {
   onDelete: (goalId: string) => void
   onUpdateProgress: (goalId: string, progress: number) => void
   onToggleComplete: (goalId: string, completed: boolean) => void
+  onShare?: (goalId: string) => void
 }
 
 const categoryColors = {
@@ -46,7 +48,8 @@ export default function GoalCard({
   onEdit, 
   onDelete, 
   onUpdateProgress, 
-  onToggleComplete 
+  onToggleComplete,
+  onShare 
 }: GoalCardProps) {
   const [showActions, setShowActions] = useState(false)
   const [isUpdatingProgress, setIsUpdatingProgress] = useState(false)
@@ -151,6 +154,18 @@ export default function GoalCard({
                 <CheckCircle className="h-4 w-4 mr-2" />
                 {goal.completed ? 'Mark Incomplete' : 'Mark Complete'}
               </button>
+              {onShare && (
+                <button
+                  onClick={() => {
+                    onShare(goal.id)
+                    setShowActions(false)
+                  }}
+                  className="w-full px-4 py-2 text-left hover:bg-muted flex items-center text-sm"
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share with Community
+                </button>
+              )}
               <button
                 onClick={() => {
                   onDelete(goal.id)

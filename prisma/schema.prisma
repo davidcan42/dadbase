@@ -29,6 +29,16 @@ model User {
   communityGroups CommunityMember[]
   goals           Goal[]
   progressEntries UserProgress[]
+  
+  // Phase 5: Advanced features
+  achievements    Achievement[]
+  goalStreaks     GoalStreak[]
+  sharedGoals     GoalShare[]      @relation("SharedGoals")
+  receivedGoals   GoalShare[]      @relation("ReceivedGoals")
+  analytics       GoalAnalytics[]
+  challenges      CommunityChallenge[]
+  challengeParticipations ChallengeParticipant[]
+  notifications   Notification[]
 }
 
 // Father-specific profile information
@@ -127,6 +137,10 @@ model Goal {
   priority    String   @default("medium") // 'low', 'medium', 'high'
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  // Phase 5: Advanced features
+  shares      GoalShare[]
+  analytics   GoalAnalytics[]
 }
 
 // Community groups for father support
@@ -170,5 +184,130 @@ model UserProgress {
   achievedAt    DateTime?   // When milestone was achieved
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+}
+
+// Achievement system for goal gamification
+model Achievement {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String   // 'goal_completed', 'streak_milestone', 'category_master', 'consistency_king'
+  title       String   // e.g., "First Goal Completed", "Week Warrior"
+  description String   // Achievement description
+  icon        String?  // Icon identifier for the badge
+  metadata    Json?    // Additional achievement data (goal count, streak length, etc.)
+  earnedAt    DateTime @default(now())
+  
+  @@index([userId])
+}
+
+// Goal streak tracking for consistency rewards
+model GoalStreak {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  streakType   String   // 'daily', 'weekly', 'monthly'
+  currentCount Int      @default(0)
+  longestCount Int      @default(0)
+  lastActivity DateTime @default(now())
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([userId, streakType])
+}
+
+// Goal sharing and social features
+model GoalShare {
+  id           String   @id @default(cuid())
+  goalId       String
+  goal         Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  sharedBy     String
+  sharer       User     @relation("SharedGoals", fields: [sharedBy], references: [id], onDelete: Cascade)
+  sharedWith   String?  // Optional: specific user to share with
+  recipient    User?    @relation("ReceivedGoals", fields: [sharedWith], references: [id], onDelete: Cascade)
+  privacyLevel String   @default("private") // 'private', 'family', 'community', 'public'
+  shareType    String   // 'achievement', 'progress', 'milestone'
+  message      String?
+  sharedAt     DateTime @default(now())
+  
+  @@index([goalId])
+  @@index([sharedBy])
+}
+
+// Goal analytics and metrics tracking
+model GoalAnalytics {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goalId          String?
+  goal            Goal?    @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  eventType       String   // 'goal_created', 'progress_updated', 'goal_completed', 'deadline_missed'
+  eventData       Json     // Additional event-specific data
+  category        String?  // Goal category for aggregation
+  priority        String?  // Goal priority for analysis
+  sessionDuration Int?     // Time spent on goal-related activities (in minutes)
+  createdAt       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+// Community challenges and group goals
+model CommunityChallenge {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String   // 'bonding', 'development', 'personal_growth', 'relationship'
+  difficulty  String   @default("medium") // 'easy', 'medium', 'hard'
+  duration    Int      // Duration in days
+  targetAge   String?  // Target child age group
+  createdBy   String
+  creator     User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  isActive    Boolean  @default(true)
+  participants ChallengeParticipant[]
+  startDate   DateTime @default(now())
+  endDate     DateTime
+  createdAt   DateTime @default(now())
+  
+  @@index([category])
+  @@index([isActive])
+}
+
+// Challenge participation tracking
+model ChallengeParticipant {
+  id              String             @id @default(cuid())
+  challengeId     String
+  challenge       CommunityChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt        DateTime           @default(now())
+  completed       Boolean            @default(false)
+  completedAt     DateTime?
+  progress        Int                @default(0) // 0-100
+  notes           String?
+  
+  @@unique([challengeId, userId])
+}
+
+// Notification system for smart reminders
+model Notification {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type            String   // 'goal_reminder', 'achievement_earned', 'streak_milestone', 'challenge_update'
+  title           String
+  message         String
+  actionUrl       String?  // Deep link to relevant page
+  metadata        Json?    // Additional notification data
+  isRead          Boolean  @default(false)
+  scheduledFor    DateTime? // For delayed notifications
+  sentAt          DateTime?
+  createdAt       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([type])
+  @@index([isRead])
 }
 

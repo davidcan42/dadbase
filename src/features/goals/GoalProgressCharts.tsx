@@ -146,49 +146,59 @@ export default function GoalProgressCharts() {
     )
   }
 
-  const BarChart = ({ data, maxValue }: { data: TimelineData[], maxValue: number }) => (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-muted-foreground">Goals Activity</span>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span className="text-xs text-muted-foreground">Completed</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-            <span className="text-xs text-muted-foreground">Created</span>
+  const BarChart = ({ data, maxValue }: { data: TimelineData[], maxValue: number }) => {
+    const chartHeight = 120 // Fixed height for bars
+    const safeMaxValue = Math.max(maxValue, 1) // Prevent division by zero
+    
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Goals Activity</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span className="text-xs text-muted-foreground">Completed</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <span className="text-xs text-muted-foreground">Created</span>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="flex items-end justify-between gap-2 h-32">
-        {data.map((item, index) => (
-          <div key={index} className="flex-1 flex flex-col items-center gap-1">
-            <div className="w-full flex flex-col items-center gap-1">
-              <div className="w-full bg-muted rounded-t-sm relative">
-                <div
-                  className="bg-green-500 rounded-t-sm transition-all duration-500"
-                  style={{ 
-                    height: `${(item.completed / maxValue) * 100}px`,
-                    minHeight: item.completed > 0 ? '4px' : '0px'
-                  }}
-                />
-                <div
-                  className="bg-blue-500 rounded-t-sm transition-all duration-500"
-                  style={{ 
-                    height: `${(item.created / maxValue) * 100}px`,
-                    minHeight: item.created > 0 ? '4px' : '0px'
-                  }}
-                />
+        
+        <div className="flex items-end justify-between gap-3 pb-6" style={{ height: chartHeight + 40 }}>
+          {data.map((item, index) => {
+            const completedHeight = Math.max((item.completed / safeMaxValue) * chartHeight, item.completed > 0 ? 4 : 0)
+            const createdHeight = Math.max((item.created / safeMaxValue) * chartHeight, item.created > 0 ? 4 : 0)
+            
+            return (
+              <div key={index} className="flex-1 flex flex-col items-center">
+                <div className="w-full flex justify-center gap-1 mb-2" style={{ height: chartHeight }}>
+                  {/* Completed bar */}
+                  <div className="flex flex-col justify-end w-4">
+                    <div
+                      className="bg-green-500 rounded-t-sm transition-all duration-500 w-full"
+                      style={{ height: `${completedHeight}px` }}
+                    />
+                  </div>
+                  {/* Created bar */}
+                  <div className="flex flex-col justify-end w-4">
+                    <div
+                      className="bg-blue-500 rounded-t-sm transition-all duration-500 w-full"
+                      style={{ height: `${createdHeight}px` }}
+                    />
+                  </div>
+                </div>
+                <span className="text-xs text-muted-foreground text-center whitespace-nowrap">
+                  {item.month}
+                </span>
               </div>
-            </div>
-            <span className="text-xs text-muted-foreground">{item.month}</span>
-          </div>
-        ))}
+            )
+          })}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   if (loading) {
     return (
