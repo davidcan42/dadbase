@@ -131,31 +131,7 @@ export default function Dashboard() {
     );
   }
 
-  // Mock data - this will come from the database later
-  const mockGoals = [
-    {
-      id: '1',
-      title: 'Daily bonding time with child',
-      progress: 75,
-      targetDate: new Date('2025-08-01'),
-      completed: false,
-      category: 'bonding'
-    },
-    {
-      id: '2',
-      title: 'Learn about child development milestones',
-      progress: 60,
-      completed: false,
-      category: 'development'
-    },
-    {
-      id: '3',
-      title: 'Establish bedtime routine',
-      progress: 100,
-      completed: true,
-      category: 'development'
-    }
-  ];
+  // Goals are now fetched directly by the ProgressTracker component
 
   const mockInsight = {
     title: "The Science of Father-Child Bonding",
@@ -237,7 +213,7 @@ export default function Dashboard() {
             description="Fatherhood journey tracking"
             icon={TrendingUp}
           >
-            <ProgressTracker goals={mockGoals} />
+            <ProgressTracker />
           </DashboardCard>
         </div>
       </div>

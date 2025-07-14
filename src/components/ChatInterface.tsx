@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
+import ChatGoalSuggestions from '@/features/goals/ChatGoalSuggestions';
 import { Plus, MoreHorizontal, Archive, Trash2, MessageCircle } from 'lucide-react';
 
 interface Message {
@@ -257,6 +258,28 @@ export default function ChatInterface() {
     }
   };
 
+  // Create goal from chat
+  const createGoalFromChat = async (data: any) => {
+    try {
+      const response = await fetch('/api/goals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create goal');
+      }
+
+      // Show success feedback
+      console.log('Goal created successfully from chat');
+    } catch (error) {
+      console.error('Error creating goal from chat:', error);
+    }
+  };
+
   if (isLoadingThreads) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -390,6 +413,16 @@ export default function ChatInterface() {
               )}
               <div ref={messagesEndRef} />
             </div>
+
+            {/* Goal Suggestions - Only show when there are messages */}
+            {messages.length > 0 && currentThread && (
+              <div className="px-4 pb-4">
+                <ChatGoalSuggestions
+                  threadId={currentThread.id}
+                  onCreateGoal={createGoalFromChat}
+                />
+              </div>
+            )}
 
             {/* Input */}
             <ChatInput

@@ -4,6 +4,7 @@ import { UserButton } from '@clerk/nextjs';
 import { ThemeToggle } from './theme-toggle';
 import { Shield } from 'lucide-react';
 import Link from 'next/link';
+import GoalNotifications from '@/features/goals/GoalNotifications';
 
 export default function TopHeader() {
   return (
@@ -22,6 +23,7 @@ export default function TopHeader() {
           {/* User Controls */}
           <div className="flex items-center space-x-4">
             <ThemeToggle />
+            <GoalNotifications />
             <nav className="hidden md:flex items-center space-x-4">
               <Link 
                 href="/profile" 
