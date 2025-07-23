@@ -249,4 +249,4 @@ This document outlines the user interface design for FatherWise, combining the b
 
 This hybrid UI design combines the analytical efficiency of an executive dashboard, the emotional support of a trusted companion, and the motivation of an action-oriented hub. The result is a modern, balanced interface that serves professional fathers' diverse needs while maintaining the scientific credibility and masculine appeal necessary for market success.
 
-The design prioritizes accessibility, privacy, and user experience while leveraging Dr. Anna Machin's research as the foundation for all features and interactions. This approach ensures that FatherWise will stand out in the crowded parenting app market while providing genuine value to fathers seeking science-based support in their parenting journey.
+The design prioritizes accessibility, privacy, and user experience while leveraging leading research in fatherhood as the foundation for all features and interactions. This approach ensures that DadBase will stand out in the crowded parenting app market while providing genuine value to fathers seeking science-based support in their parenting journey.

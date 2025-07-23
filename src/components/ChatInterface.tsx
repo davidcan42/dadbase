@@ -222,7 +222,7 @@ export default function ChatInterface() {
       
       const aiMessage: Message = {
         id: 'ai-' + Date.now(),
-        content: `Thanks for your message! I understand you're asking about "${content}". As a father support AI coach, I'm here to help with your parenting journey. While I'm currently in development, I can already provide guidance based on Dr. Anna Machin's research on fatherhood.`,
+        content: `Thanks for your message! I understand you're asking about "${content}". As a father support AI coach, I'm here to help with your parenting journey. While I'm currently in development, I can already provide guidance based on leading research in fatherhood from experts worldwide.`,
         role: 'assistant',
         timestamp: new Date()
       };
@@ -377,7 +377,7 @@ export default function ChatInterface() {
                     {currentThread.title}
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    AI Coach - Powered by Dr. Anna Machin's research
+                    AI Coach - Powered by leading research worldwide
                   </p>
                 </div>
                 <button className="p-2 hover:bg-muted rounded-lg transition-colors">
@@ -439,7 +439,7 @@ export default function ChatInterface() {
                 Welcome to your AI Coach
               </h3>
               <p className="text-muted-foreground mb-4">
-                Get personalized advice based on Dr. Anna Machin's research
+                Get personalized advice based on leading research worldwide
               </p>
               <button
                 onClick={() => {

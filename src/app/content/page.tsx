@@ -22,7 +22,7 @@ export default function ContentPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-foreground mb-2">Research Library</h2>
-          <p className="text-muted-foreground">Please sign in to access Dr. Anna Machin's research.</p>
+          <p className="text-muted-foreground">Please sign in to access leading research on fatherhood.</p>
         </div>
       </div>
     );
@@ -37,7 +37,7 @@ export default function ContentPage() {
           Research Library
         </h1>
         <p className="text-muted-foreground">
-          Access Dr. Anna Machin's groundbreaking research on fatherhood and child development
+          Access groundbreaking research on fatherhood and child development from leading experts worldwide
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export default function ContentPage() {
                 Research Library Coming Soon
               </h3>
               <p className="text-muted-foreground max-w-md">
-                Explore evidence-based content from Dr. Anna Machin's research on 
+                Explore evidence-based content from leading researchers on 
                 paternal neuroscience and child development.
               </p>
             </div>

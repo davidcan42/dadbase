@@ -223,7 +223,7 @@ export default function OnboardingPage() {
               <h3 className="font-semibold text-foreground mb-3">What you'll get:</h3>
               <ul className="text-sm text-muted-foreground space-y-2 text-left">
                 <li>• Personalized AI coaching based on your children's ages</li>
-                <li>• Evidence-based advice from Dr. Anna Machin's research</li>
+                <li>• Evidence-based advice from leading researchers worldwide</li>
                 <li>• Goal tracking and progress monitoring</li>
                 <li>• Connection with other fathers in similar situations</li>
                 <li>• Daily insights tailored to your parenting journey</li>

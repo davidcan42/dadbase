@@ -38,7 +38,7 @@ export default function ChatPage() {
           AI Coach
         </h1>
         <p className="text-muted-foreground text-sm">
-          Get personalized advice based on Dr. Anna Machin's research
+          Get personalized advice based on leading research worldwide
         </p>
       </div>
 

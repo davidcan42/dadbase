@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "DadBase - Your Command Center for Fatherhood",
-  description: "AI-powered support platform for fathers, backed by scientific research from Dr. Anna Machin",
+  description: "AI-powered support platform for fathers, backed by scientific research from leading experts worldwide",
 };
 
 export default function RootLayout({

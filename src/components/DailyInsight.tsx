@@ -41,7 +41,7 @@ export default function DailyInsight({ insight, className = '' }: DailyInsightPr
           </div>
           <div>
             <h3 className="text-lg font-semibold text-foreground">Today's Insight</h3>
-            <p className="text-sm text-muted-foreground">From Dr. Anna Machin's research</p>
+            <p className="text-sm text-muted-foreground">From leading researchers worldwide</p>
           </div>
         </div>
         <span className="text-2xl" role="img" aria-label={insight.category}>

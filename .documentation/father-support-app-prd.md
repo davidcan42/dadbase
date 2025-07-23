@@ -2,7 +2,7 @@
 
 ## 1. Elevator Pitch
 
-FatherWise is an AI-powered mobile application that provides science-based fatherhood support using Dr. Anna Machin's groundbreaking research on paternal neuroscience and child development. The app addresses a critical gap in the $3.2 billion parenting app market, where fathers represent only 1.6% of available resources despite their unique and irreplaceable role in child development. By combining Dr. Machin's peer-reviewed research with advanced AI technology, FatherWise offers personalized coaching, mental health support, and evidence-based guidance to help modern fathers navigate their journey from conception through their children's development, ultimately strengthening father-child bonds and improving family outcomes.
+DadBase is an AI-powered mobile application that provides science-based fatherhood support using groundbreaking research from leading experts worldwide on paternal neuroscience and child development. The app addresses a critical gap in the $3.2 billion parenting app market, where fathers represent only 1.6% of available resources despite their unique and irreplaceable role in child development. By combining peer-reviewed research from top researchers with advanced AI technology, DadBase offers personalized coaching, mental health support, and evidence-based guidance to help modern fathers navigate their journey from conception through their children's development, ultimately strengthening father-child bonds and improving family outcomes.
 
 ## 2. Who is this app for
 

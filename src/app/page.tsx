@@ -136,7 +136,7 @@ export default function Dashboard() {
   const mockInsight = {
     title: "The Science of Father-Child Bonding",
     content: "Research shows that fathers' brains undergo significant changes during the first year of fatherhood, increasing sensitivity to their child's needs. The hormone vasopressin plays a crucial role in paternal bonding, making fathers more protective and nurturing.",
-    source: "Dr. Anna Machin - The Life of Dad",
+    source: "Leading Research - Paternal Neuroscience",
     category: "bonding",
     actionTip: "Spend 15 minutes in uninterrupted one-on-one time with your child today. Put away devices and focus entirely on their communication and needs."
   };
@@ -184,7 +184,7 @@ export default function Dashboard() {
             icon={BookOpen}
             className="text-center hover:bg-secondary/5 border-secondary/20"
           >
-            <p className="text-sm text-muted-foreground">Dr. Anna's research</p>
+            <p className="text-sm text-muted-foreground">Research Library</p>
           </DashboardCard>
         </Link>
 

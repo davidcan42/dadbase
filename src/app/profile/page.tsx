@@ -139,7 +139,7 @@ export default function ProfilePage() {
                 and connect you with fathers in similar circumstances.
               </p>
               <ul className="mt-3 text-sm text-muted-foreground space-y-1">
-                <li>• Get personalized daily insights from Dr. Anna Machin's research</li>
+                <li>• Get personalized daily insights from leading research worldwide</li>
                 <li>• Receive AI coaching tailored to your child's age and development</li>
                 <li>• Connect with fathers who share similar experiences</li>
                 <li>• Track your progress on your fatherhood journey</li>

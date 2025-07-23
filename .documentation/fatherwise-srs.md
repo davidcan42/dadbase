@@ -9,7 +9,7 @@ FatherWise employs a **modern Progressive Web Application (PWA) architecture** d
 - **Backend**: Node.js/Express API server with RAG implementation
 - **Database**: PostgreSQL for user data + Vector database for embeddings
 - **AI Integration**: OpenAI API with custom RAG pipeline
-- **Content Storage**: Vector embeddings of Dr. Anna Machin's research
+- **Content Storage**: Vector embeddings of leading fatherhood research
 
 ### Core System Principles
 - **Mobile-First**: Responsive design optimized for father usage patterns
@@ -46,7 +46,7 @@ FatherWise employs a **modern Progressive Web Application (PWA) architecture** d
 ### Microservices-Ready Components
 - **User Service**: Authentication, profiles, preferences
 - **AI Service**: RAG pipeline, embeddings, chat processing  
-- **Content Service**: Dr. Anna's content management
+- **Content Service**: Research content management
 - **Community Service**: Father groups, messaging, forums
 - **Analytics Service**: Usage tracking, progress monitoring
 
@@ -90,7 +90,7 @@ const AppContext = {
 ### RAG-Enhanced AI Chat Flow
 ```
 User Input → NLP Processing → Intent Classification → 
-Vector Search (Dr. Anna's Content) → Context Assembly → 
+Vector Search (Research Content) → Context Assembly → 
 OpenAI API Call → Response Generation → UI Update
 ```
 
@@ -192,7 +192,7 @@ OpenAI API Call → Response Generation → UI Update
 /dashboard                # Main father dashboard
 /chat                     # AI coaching interface
 /content/
-  ├── /library           # Dr. Anna's content browser
+  ├── /library           # Research content browser
   ├── /bookmarks         # Saved content
   └── /progress          # Learning tracking
 
@@ -318,7 +318,7 @@ CREATE TABLE chat_messages (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Dr. Anna's Content
+-- Research Content
 CREATE TABLE content_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
